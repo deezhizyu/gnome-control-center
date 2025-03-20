@@ -22,6 +22,12 @@ jobs:
         run: |
           rm -r /run/host${{ runner.tool_cache }}
 
+      - name: switch-to-sid
+        run: |
+          mv /etc/apt/sources.list.d/vanilla-base.sources /etc/vanilla-base.sources.bak
+          echo "deb http://deb.debian.org/debian sid main" > /etc/apt/sources.list.d/sid.list
+          apt update
+
       - name: Install needed packages
         run: |
           DEBIAN_FRONTEND=noninteractive apt update
