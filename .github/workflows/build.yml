@@ -5,6 +5,9 @@ on:
     branches: ["main", "vanilla/48-beta2", "gnome-48"]
   pull_request:
 
+env:
+  MESON_BUILD_DIR: _build
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -94,6 +97,16 @@ jobs:
             wget \
             git
 
+      - name: Build
+        run: |
+          meson setup $MESON_BUILD_DIR -Dprofile=development -Dwarning_level=2
+          meson compile -C $MESON_BUILD_DIR 2>&1 | tee compilation.log
+
+      - name: Run tests
+        run: |
+          export GSK_RENDERER=ngl
+          meson test -C $MESON_BUILD_DIR --verbose --no-stdsplit --no-rebuild
+
       - name: Build debian package
         run: |
           wget https://github.com/deezhizyu/gnome-control-center/tarball/gnome-48
@@ -104,6 +117,15 @@ jobs:
       - name: Calculate and Save Checksums
         run: |
           sha256sum /__w/gnome-control-center/gnome-control-center.tar.xz >> checksums.txt
+
+      - name: Upload build logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs
+          path: |
+            ./*.log
+            ${{ env.MESON_BUILD_DIR }}/meson-logs/
+          retention-days: 7
 
       - uses: actions/upload-artifact@v4
         with:
