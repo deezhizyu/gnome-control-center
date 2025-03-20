@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - '*'
+      - "*"
 
 jobs:
   build-artifacts:
@@ -18,94 +18,94 @@ jobs:
       contents: read
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: De-bloat stock image
-      run: |
-        rm -r /run/host/usr/share/dotnet
-        rm -r /run/host${{ runner.tool_cache }}
+      - name: De-bloat stock image
+        run: |
+          rm -r /run/host/usr/share/dotnet
+          rm -r /run/host${{ runner.tool_cache }}
 
-    - name: Install needed packages
-      run: |
-        DEBIAN_FRONTEND=noninteractive apt update
-        DEBIAN_FRONTEND=noninteractive apt install -y \
-          dpkg-dev \
-          build-essential \
-          debhelper-compat \
-          desktop-file-utils \
-          dh-sequence-gnome \
-          gnome-settings-daemon-dev \
-          gsettings-desktop-schemas-dev \
-          gtk-doc-tools \
-          libaccountsservice-dev \
-          libadwaita-1-dev \
-          libcolord-dev \
-          libcolord-gtk4-dev \
-          libcups2-dev \
-          libgcr-4-dev \
-          libgdk-pixbuf-2.0-dev \
-          libgirepository1.0-dev \
-          libglib2.0-dev \
-          libgnome-bg-4-dev \
-          libgnome-bluetooth-ui-3.0-dev \
-          libgnome-desktop-4-dev \
-          libgnome-rr-4-dev \
-          libgnutls28-dev \
-          libgoa-1.0-dev \
-          libgoa-backend-1.0-dev \
-          libgsound-dev \
-          libgtk-4-dev \
-          libgtop2-dev \
-          libgudev-1.0-dev \
-          libhandy-1-dev \
-          libibus-1.0-dev \
-          libjson-glib-dev \
-          libkrb5-dev \
-          libmalcontent-0-dev \
-          libmm-glib-dev \
-          libnm-dev \
-          libnma-gtk4-dev \
-          libpolkit-gobject-1-dev \
-          libpulse-dev \
-          libpwquality-dev \
-          libsecret-1-dev \
-          libsmbclient-dev \
-          libsoup-3.0-dev \
-          libudisks2-dev \
-          libupower-glib-dev \
-          libwacom-dev \
-          libx11-dev \
-          libxft-dev \
-          libxi-dev \
-          libxklavier-dev \
-          libxml2-dev \
-          libxml2-utils \
-          locales \
-          meson \
-          polkitd \
-          python3-dbusmock \
-          shared-mime-info \
-          tecla \
-          tzdata \
-          xvfb \
-          wget \
-          git
-  
-    - name: Build debian package
-      run: |
-        wget https://github.com/vanilla-os/gnome-control-center/tarball/main
-        mv main ../gnome-control-center_48~beta-2~99-orchid-stable.orig.tar.gz
-        dpkg-buildpackage -b -uc -us
-        tar cvf ../gnome-control-center.tar.xz ../*.deb
-    
-    - name: Calculate and Save Checksums
-      run: |
-        sha256sum /__w/gnome-control-center/gnome-control-center.tar.xz >> checksums.txt
+      - name: Install needed packages
+        run: |
+          DEBIAN_FRONTEND=noninteractive apt update
+          DEBIAN_FRONTEND=noninteractive apt install -y \
+            dpkg-dev \
+            build-essential \
+            debhelper-compat \
+            desktop-file-utils \
+            dh-sequence-gnome \
+            gnome-settings-daemon-dev \
+            gsettings-desktop-schemas-dev \
+            gtk-doc-tools \
+            libaccountsservice-dev \
+            libadwaita-1-dev \
+            libcolord-dev \
+            libcolord-gtk4-dev \
+            libcups2-dev \
+            libgcr-4-dev \
+            libgdk-pixbuf-2.0-dev \
+            libgirepository1.0-dev \
+            libglib2.0-dev \
+            libgnome-bg-4-dev \
+            libgnome-bluetooth-ui-3.0-dev \
+            libgnome-desktop-4-dev \
+            libgnome-rr-4-dev \
+            libgnutls28-dev \
+            libgoa-1.0-dev \
+            libgoa-backend-1.0-dev \
+            libgsound-dev \
+            libgtk-4-dev \
+            libgtop2-dev \
+            libgudev-1.0-dev \
+            libhandy-1-dev \
+            libibus-1.0-dev \
+            libjson-glib-dev \
+            libkrb5-dev \
+            libmalcontent-0-dev \
+            libmm-glib-dev \
+            libnm-dev \
+            libnma-gtk4-dev \
+            libpolkit-gobject-1-dev \
+            libpulse-dev \
+            libpwquality-dev \
+            libsecret-1-dev \
+            libsmbclient-dev \
+            libsoup-3.0-dev \
+            libudisks2-dev \
+            libupower-glib-dev \
+            libwacom-dev \
+            libx11-dev \
+            libxft-dev \
+            libxi-dev \
+            libxklavier-dev \
+            libxml2-dev \
+            libxml2-utils \
+            locales \
+            meson \
+            polkitd \
+            python3-dbusmock \
+            shared-mime-info \
+            tecla \
+            tzdata \
+            xvfb \
+            wget \
+            git
 
-    - uses: actions/upload-artifact@v4
-      with:
-        name: gnome-control-center
-        path: |
+      - name: Build debian package
+        run: |
+          wget https://github.com/deezhizyu/gnome-control-center/tarball/gnome-48
+          mv gnome-48 ../gnome-control-center_48.0~99-orchid-stable.orig.tar.gz
+          dpkg-buildpackage -b -uc -us
+          tar cvf ../gnome-control-center.tar.xz ../*.deb
+
+      - name: Calculate and Save Checksums
+        run: |
+          sha256sum /__w/gnome-control-center/gnome-control-center.tar.xz >> checksums.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gnome-control-center
+          path: |
             checksums.txt
             /__w/gnome-control-center/gnome-control-center.tar.xz
 
@@ -130,11 +130,11 @@ jobs:
 
       - name: Create Release
         env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh release create "${{ github.ref_name }}" --generate-notes *.tar.xz gnome-control-center/checksums.txt
-      
+
       - name: Attest Release Files
         id: attest
         uses: actions/attest-build-provenance@v1
         with:
-          subject-path: '*.tar.xz, gnome-control-center/*.txt'
+          subject-path: "*.tar.xz, gnome-control-center/*.txt"
